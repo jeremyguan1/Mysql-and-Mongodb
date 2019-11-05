@@ -1,11 +1,11 @@
 const path = require("path");
-
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/user");
 
 const app = express();
@@ -33,6 +33,11 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoose.connect(
-  `mongodb+srv://jeremyguan:<password>@cluster0-prhh1.mongodb.net/test?retryWrites=true&w=majority`
-);
+console.log(process.env.DB_PASSWORD);
+
+mongoose
+  .connect(
+    `mongodb+srv://jeremyguan:${process.env.DB_PASSWORD}@cluster0-prhh1.mongodb.net/test?retryWrites=true&w=majority`
+  )
+  .then(result => app.listen(3000))
+  .catch(err => console.log(err));
